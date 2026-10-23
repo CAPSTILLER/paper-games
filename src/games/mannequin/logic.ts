@@ -23,6 +23,8 @@ export function guess(s: MannequinState, letter: string): MannequinState {
 }
 /** Word with blanks, e.g. "P _ M P _ _ N". Spaces are shown as a gap. */
 export const masked = (s: MannequinState) => s.word.split("").map((ch) => (ch === " " ? " " : s.guessed.includes(ch) || s.status === "lost" ? ch : "_"));
+/** Classic hangman: each missed letter places one mannequin part. */
+export const partsPlaced = (s: MannequinState) => Math.min(s.wrong.length, s.maxWrong);
 /** 0..1 share of the display that's built (correct letters found / total unique letters). */
 export const progress = (s: MannequinState) => s.guessed.length / uniqueLetters(s.word).length;
 /** Number of display pieces (of `total`) to show. */

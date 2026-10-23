@@ -123,6 +123,40 @@ describe("hang mannequin", () => {
   });
 });
 
+describe("combo turns", () => {
+  it("player keeps turn across a chain of boxes", () => {
+    let s = D.newDots(3, 1);
+    // all horizontal edges + left wall: each vertical line now closes a box
+    for (const e of [{kind:"h",r:0,c:0},{kind:"h",r:1,c:0},{kind:"h",r:0,c:1},{kind:"h",r:1,c:1},{kind:"h",r:0,c:2},{kind:"h",r:1,c:2},{kind:"v",r:0,c:0}] as D.Edge[]) s = D.drawEdge(s, e).state;
+    const p = s.turn;
+    for (const c of [1, 2, 3]) { const r = D.drawEdge(s, { kind: "v", r: 0, c }); expect(r.completed).toBe(1); s = r.state; if (!s.over) expect(s.turn).toBe(p); }
+    expect(s.score[p - 1]).toBe(3);
+  });
+  it("CPU chains: keeps taking boxes while it can", () => {
+    let s = D.newDots(3, 1);
+    for (const e of [{kind:"h",r:0,c:0},{kind:"h",r:1,c:0},{kind:"h",r:0,c:1},{kind:"h",r:1,c:1},{kind:"h",r:0,c:2},{kind:"h",r:1,c:2},{kind:"v",r:0,c:0}] as D.Edge[]) s = D.drawEdge(s, e).state;
+    s = { ...s, turn: 2 };
+    let n = 0; while (!s.over && s.turn === 2 && n++ < 5) s = D.drawEdge(s, D.aiDots(s, "easy")).state;
+    expect(s.score[1]).toBe(3); expect(s.over).toBe(true);
+  });
+});
+
+describe("mannequin parts", () => {
+  it("each miss places one part; fully built = lost", () => {
+    const mq = pickTheme("?theme=halloween").mannequin.mannequins[0];
+    let s = M.newMannequin("CAT", "", mq.parts.length);
+    s = M.guess(s, "C"); expect(M.partsPlaced(s)).toBe(0);
+    const misses = "BDEFGHIJKLMN".slice(0, mq.parts.length).split("");
+    misses.forEach((l, i) => { s = M.guess(s, l); expect(M.partsPlaced(s)).toBe(i + 1); expect(s.status).toBe(i + 1 < mq.parts.length ? "playing" : "lost"); });
+  });
+  it("halloween has a data-driven witch with 6-8 ordered parts", () => {
+    for (const mq of pickTheme("?theme=halloween").mannequin.mannequins) {
+      expect(mq.parts.length).toBeGreaterThanOrEqual(6); expect(mq.parts.length).toBeLessThanOrEqual(8);
+      expect(mq.parts[0].id).toBe("stand"); expect(new Set(mq.parts.map((p) => p.id)).size).toBe(mq.parts.length);
+    }
+  });
+});
+
 describe("themes", () => {
   it("?theme= wins, otherwise October -> halloween, unknown falls back", () => {
     expect(pickTheme("?theme=halloween").id).toBe("halloween");

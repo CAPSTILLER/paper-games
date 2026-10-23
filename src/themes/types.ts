@@ -13,12 +13,14 @@ export interface Theme {
   decorations: string[];
   mannequin: {
     storeName: string;
-    /** Display pieces added in order as correct letters are found */
-    outfit: { emoji: string; label: string }[];
-    /** Gentle "miss" visual: one bulb per allowed wrong guess goes dark */
-    lightOn: string; lightOff: string;
     winText: string; loseText: string;
+    /** Mannequins to build. One is picked at random per round. Each MISSED letter places the next part;
+     *  max misses = parts.length. Art is SVG markup in a 200x300 viewBox (stand base at the bottom). */
+    mannequins: Mannequin[];
   };
   words: { word: string; hint: string }[];
   sounds?: { place?: number[]; win?: number[] }; // optional tone frequencies (Hz)
 }
+
+export interface MannequinPart { id: string; label: string; svg: string }
+export interface Mannequin { id: string; name: string; parts: MannequinPart[] }

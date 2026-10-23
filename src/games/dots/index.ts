@@ -4,7 +4,7 @@ import * as L from "./logic";
 
 export function mount(el: HTMLElement, opts: GameOpts): GameHandle {
   const t = opts.theme, C = t.colors, cpu = opts.mode === "cpu", level = opts.level ?? "easy";
-  let s = L.newDots(10, 10), timer = 0, lastEdge: L.Edge | null = null;
+  let s = L.newDots(10, 10), timer = 0, combo = 0, lastEdge: L.Edge | null = null;
   const F = frame(el, "Dots & Boxes", opts.onExit, reset);
   const score = h("div", { class: "score" });
   const cv = h("canvas", { class: "dots" }) as HTMLCanvasElement;
@@ -46,7 +46,8 @@ export function mount(el: HTMLElement, opts: GameOpts): GameHandle {
     score.append(h("span", { class: s.turn === 1 && !s.over ? "on p1" : "p1" }, `${t.pieces.p1.emoji} ${s.score[0]}`),
                  h("span", { class: s.turn === 2 && !s.over ? "on p2" : "p2" }, `${t.pieces.p2.emoji} ${s.score[1]}`));
     F.status.textContent = win === "draw" ? "It's a tie! 🤝" : win ? `${win === 1 ? t.pieces.p1.emoji + " " + t.pieces.p1.name : t.pieces.p2.emoji + " " + t.pieces.p2.name} wins! 🎉`
-      : cpu && s.turn === 2 ? "Computer is thinking…" : `${s.turn === 1 ? t.pieces.p1.emoji + " " + t.pieces.p1.name : t.pieces.p2.emoji + " " + t.pieces.p2.name}'s turn · finish a box to go again`;
+      : (cpu && s.turn === 2 ? "🤖 Computer's turn" : `${s.turn === 1 ? t.pieces.p1.emoji + " " + t.pieces.p1.name : t.pieces.p2.emoji + " " + t.pieces.p2.name}'s turn`)
+        + (combo ? ` · 🔥 combo x${combo} — go again!` : " · tap a line between two dots. Close a box to go again!");
   }
   /** Nearest edge to a point (in CSS px), within half a gap. */
   function edgeAt(x: number, y: number): L.Edge | null {
@@ -72,10 +73,18 @@ export function mount(el: HTMLElement, opts: GameOpts): GameHandle {
   });
   function step(e: L.Edge) {
     const { state, completed } = L.drawEdge(s, e); if (state === s) return;
-    s = state; lastEdge = e; beep(s.over ? t.sounds?.win : completed ? t.sounds?.place : undefined); draw();
-    if (cpu && !s.over && s.turn === 2) timer = window.setTimeout(() => step(L.aiDots(s, level)), 350);
+    const who = s.turn;
+    s = state; lastEdge = e;
+    if (completed) { combo += completed; banner(combo > 1 ? `Combo x${combo}! Go again` : `Box! Go again`, who); } else combo = 0;
+    beep(s.over ? t.sounds?.win : completed ? t.sounds?.place : undefined); draw();
+    if (cpu && !s.over && s.turn === 2) timer = window.setTimeout(() => step(L.aiDots(s, level)), combo ? 700 : 400);
   }
-  function reset() { clearTimeout(timer); s = L.newDots(10, 10); lastEdge = null; draw(); }
+  function banner(text: string, who: number) {
+    if (s.over) text = "Last box!";
+    const b = h("div", { class: "banner", style: { background: who === 1 ? C.p1 : C.p2 } }, (who === 1 ? t.pieces.p1.emoji : t.pieces.p2.emoji) + " " + text);
+    el.append(b); setTimeout(() => b.remove(), 1100);
+  }
+  function reset() { combo = 0; clearTimeout(timer); s = L.newDots(10, 10); lastEdge = null; draw(); }
   const ro = new ResizeObserver(layout); ro.observe(F.body);
   layout();
   return { destroy() { clearTimeout(timer); ro.disconnect(); el.innerHTML = ""; }, reset };

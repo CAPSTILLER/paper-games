@@ -14,13 +14,23 @@ export function mount(el: HTMLElement, opts: GameOpts): GameHandle {
     const res = superMode ? s.result : c.result, turn = superMode ? s.turn : c.turn;
     if (res === "draw") return "It's a tie! 🤝";
     if (res) return `${piece(res)} ${name(res)} wins! 🎉`;
-    const who = cpu && turn === 2 ? "Computer is thinking…" : `${piece(turn)} ${name(turn)}'s turn`;
-    if (superMode && !s.freePlay) return who + (s.active === null ? " · play any board" : " · play the glowing board");
-    return who;
+    return cpu && turn === 2 ? "🤖 Computer is thinking…" : `${piece(turn)} ${name(turn)}'s turn`;
+  }
+  const BOARD = ["top-left","top","top-right","left","middle","right","bottom-left","bottom","bottom-right"];
+  function hintText() {
+    const res = superMode ? s.result : c.result, turn = superMode ? s.turn : c.turn;
+    if (res) return "Tap ↻ New to play again";
+    if (cpu && turn === 2) return "";
+    const nm = name(turn).toLowerCase();
+    if (!superMode) return `Tap a square to place your ${nm}`;
+    if (s.active === null) return `Tap a square in ANY open board to place your ${nm}. Win 3 boards in a row!`;
+    return `Play in the glowing ${BOARD[s.active]} board. Win 3 boards in a row!`;
   }
   function render() {
-    F.status.textContent = statusText();
+    F.status.innerHTML = "";
+    F.status.append(h("span", { class: "turnchip" }, statusText()));
     F.body.innerHTML = "";
+    F.body.append(h("div", { class: "hint" }, hintText()));
     if (!superMode) {
       const g = h("div", { class: "ttt big" });
       c.board.forEach((v, i) => g.append(h("button", { class: "cell" + (v ? " filled" : ""), onclick: () => play(i) }, piece(v))));
