@@ -1,5 +1,7 @@
 import type { GameOpts, GameHandle } from "../types";
-import { h, frame, beep } from "../../ui";
+import { h, frame } from "../../ui";
+import { sfx } from "../../audio";
+import { confetti, fog } from "../../fx";
 import * as L from "./logic";
 
 export function mount(el: HTMLElement, opts: GameOpts): GameHandle {
@@ -33,16 +35,18 @@ export function mount(el: HTMLElement, opts: GameOpts): GameHandle {
     F.body.append(h("div", { class: "hint" }, hintText()));
     if (!superMode) {
       const g = h("div", { class: "ttt big" });
-      c.board.forEach((v, i) => g.append(h("button", { class: "cell" + (v ? " filled" : ""), onclick: () => play(i) }, piece(v))));
+      const wl = L.winLine(c.board) ?? [];
+      c.board.forEach((v, i) => g.append(h("button", { class: "cell" + (v ? " filled" : "") + (wl.includes(i) ? " winglow" : ""), onclick: () => play(i) }, h("span", { class: "pc" }, piece(v)))));
       F.body.append(g); return;
     }
     const legal = new Set(L.superLegal(s).map(([b, i]) => b * 9 + i));
     const g = h("div", { class: "ttt super" });
+    const swl = L.winLine(s.boxes) ?? [];
     s.boards.forEach((bd, b) => {
       const won = s.boxes[b];
       const active = !s.result && !won && (s.active === null || s.active === b);
-      const sb = h("div", { class: "sb" + (active ? " active" : "") + (won ? " done" : "") });
-      bd.forEach((v, i) => sb.append(h("button", { class: "cell" + (legal.has(b * 9 + i) ? "" : " off"), onclick: () => play(b, i) }, piece(v))));
+      const sb = h("div", { class: "sb" + (active ? " active" : "") + (won ? " done" : "") + (swl.includes(b) ? " winglow" : "") });
+      bd.forEach((v, i) => sb.append(h("button", { class: "cell" + (legal.has(b * 9 + i) ? "" : " off"), onclick: () => play(b, i) }, h("span", { class: "pc" }, piece(v)))));
       if (won) sb.append(h("div", { class: "claim" }, piece(won)));
       g.append(sb);
     });
@@ -58,15 +62,17 @@ export function mount(el: HTMLElement, opts: GameOpts): GameHandle {
     if (superMode) s = L.superMove(s, a, b!); else c = L.classicMove(c, a);
     if ((superMode ? s : c) === before) return;
     const res = superMode ? s.result : c.result;
-    beep(res ? t.sounds?.win : t.sounds?.place);
     render();
+    if (!res) sfx("place");
+    else if (res === "draw" || (cpu && res === 2)) { sfx("lose"); fog(F.body); }
+    else { sfx("win"); confetti(t.decorations); }
     if (cpu && !res && (superMode ? s.turn : c.turn) === 2) {
       timer = window.setTimeout(() => {
         if (superMode) { const [x, y] = L.aiSuper(s, level); step(x, y); } else step(L.aiClassic(c, level));
       }, 450);
     }
   }
-  function reset() { clearTimeout(timer); c = L.newClassic(); s = L.newSuper(!!opts.freePlay); render(); }
+  function reset() { F.body.classList.remove("fogged"); clearTimeout(timer); c = L.newClassic(); s = L.newSuper(!!opts.freePlay); render(); }
   render();
   return { destroy() { clearTimeout(timer); el.innerHTML = ""; }, reset };
 }

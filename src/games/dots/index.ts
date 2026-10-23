@@ -1,5 +1,7 @@
 import type { GameOpts, GameHandle } from "../types";
-import { h, frame, beep } from "../../ui";
+import { h, frame } from "../../ui";
+import { sfx } from "../../audio";
+import { fireworks, fog } from "../../fx";
 import * as L from "./logic";
 
 export function mount(el: HTMLElement, opts: GameOpts): GameHandle {
@@ -76,7 +78,9 @@ export function mount(el: HTMLElement, opts: GameOpts): GameHandle {
     const who = s.turn;
     s = state; lastEdge = e;
     if (completed) { combo += completed; banner(combo > 1 ? `Combo x${combo}! Go again` : `Box! Go again`, who); } else combo = 0;
-    beep(s.over ? t.sounds?.win : completed ? t.sounds?.place : undefined); draw();
+    draw();
+    if (s.over) { const w = L.winner(s); if (w === "draw" || (cpu && w === 2)) { sfx("lose"); fog(F.body); } else { sfx("win"); fireworks([w === 1 ? C.p1 : C.p2, C.accent, C.dot]); } }
+    else sfx(completed ? (combo > 1 ? "combo" : "box") : "place");
     if (cpu && !s.over && s.turn === 2) timer = window.setTimeout(() => step(L.aiDots(s, level)), combo ? 700 : 400);
   }
   function banner(text: string, who: number) {
@@ -84,7 +88,7 @@ export function mount(el: HTMLElement, opts: GameOpts): GameHandle {
     const b = h("div", { class: "banner", style: { background: who === 1 ? C.p1 : C.p2 } }, (who === 1 ? t.pieces.p1.emoji : t.pieces.p2.emoji) + " " + text);
     el.append(b); setTimeout(() => b.remove(), 1100);
   }
-  function reset() { combo = 0; clearTimeout(timer); s = L.newDots(10, 10); lastEdge = null; draw(); }
+  function reset() { F.body.classList.remove("fogged"); F.body.querySelector(".fog")?.remove(); combo = 0; clearTimeout(timer); s = L.newDots(10, 10); lastEdge = null; draw(); }
   const ro = new ResizeObserver(layout); ro.observe(F.body);
   layout();
   return { destroy() { clearTimeout(timer); ro.disconnect(); el.innerHTML = ""; }, reset };

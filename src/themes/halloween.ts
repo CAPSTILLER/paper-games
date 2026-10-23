@@ -1,4 +1,5 @@
 import type { Theme } from "./types";
+const STAND = { id: "stand", label: "display stand", svg: `<rect x="70" y="282" width="60" height="8" rx="4" fill="#4a3a2a"/><rect x="97" y="200" width="6" height="84" fill="#6b5640"/>` };
 export const halloween: Theme = {
   id: "halloween", name: "Halloween", title: "Spooky Fun Games",
   colors: { bg: "#1a0f2e", bg2: "#2d1650", panel: "#2a1a45", text: "#fff7e6", accent: "#ff8c1a",
@@ -7,11 +8,11 @@ export const halloween: Theme = {
   decorations: ["🦇", "🕸️", "🍬", "🌙", "🕷️", "🍭"],
   mannequin: {
     storeName: "Boo Boutique",
-    winText: "You solved it before the witch was finished!",
-    loseText: "The witch mannequin is all dressed up — she wins this round!",
+    winText: "You solved it before the {name} was finished!",
+    loseText: "The {name} mannequin is all dressed up — it wins this round!",
     mannequins: [
-      { id: "witch", name: "Window Witch", parts: [
-        { id: "stand", label: "display stand", svg: `<rect x="70" y="282" width="60" height="8" rx="4" fill="#4a3a2a"/><rect x="97" y="200" width="6" height="84" fill="#6b5640"/>` },
+      { id: "witch", name: "Witch", parts: [
+        STAND,
         { id: "legs", label: "striped legs & boots", svg: `<g><rect x="84" y="200" width="12" height="62" fill="#fff"/><rect x="104" y="200" width="12" height="62" fill="#fff"/>${[0,1,2,3,4,5].map(i=>`<rect x="84" y="${204+i*10}" width="32" height="5" fill="#7b3fbf"/>`).join("")}<rect x="99" y="200" width="2" height="62" fill="#ffe9b8"/><path d="M80 262h18v12h-24q0-12 6-12z M102 262h18q6 0 6 12h-24z" fill="#222"/></g>` },
         { id: "dress", label: "dress", svg: `<path d="M86 118h28l22 86H64z" fill="#2b1d3f"/><rect x="84" y="150" width="32" height="7" fill="#ff8c1a"/><circle cx="100" cy="153" r="5" fill="#ffd27a"/>` },
         { id: "arms", label: "arms", svg: `<path d="M86 124l-24 46" stroke="#2b1d3f" stroke-width="12" stroke-linecap="round"/><path d="M114 124l24 46" stroke="#2b1d3f" stroke-width="12" stroke-linecap="round"/><circle cx="61" cy="173" r="6" fill="#8fd16a"/><circle cx="139" cy="173" r="6" fill="#8fd16a"/>` },
@@ -19,6 +20,47 @@ export const halloween: Theme = {
         { id: "hair", label: "hair", svg: `<path d="M80 80q-10 30 2 44M120 80q10 30-2 44" stroke="#ff8c1a" stroke-width="8" fill="none" stroke-linecap="round"/>` },
         { id: "hat", label: "witch hat", svg: `<ellipse cx="100" cy="70" rx="36" ry="7" fill="#1b1230"/><path d="M80 70L104 14l4 4-8 52z M80 70h40L106 16z" fill="#1b1230"/><rect x="82" y="60" width="36" height="7" fill="#7b3fbf"/>` },
         { id: "broom", label: "broom", svg: `<path d="M150 120l-8 150" stroke="#8a5a2b" stroke-width="5" stroke-linecap="round"/><path d="M134 262l18 0 6 26h-30z" fill="#e0b050"/>` },
+      ] },
+
+      { id: "zombie", name: "Zombie", parts: [
+        STAND,
+        { id: "legs", label: "torn pants & sneakers", svg: `<path d="M84 200h14v58h-14z M102 200h14v58h-14z" fill="#3b5b8a"/><path d="M84 248l5 6 5-6 4 6v4h-14z M102 250l4 5 5-5 5 5v3h-14z" fill="#8fbf6a"/><path d="M78 258h22v12h-24z M100 258h22l2 12h-24z" fill="#ddd"/><path d="M76 266h24M100 266h24" stroke="#c33" stroke-width="3"/>` },
+        { id: "shirt", label: "ragged shirt", svg: `<path d="M84 118h32l6 86H78z" fill="#7a8a4a"/><path d="M78 204l6-8 6 8 6-8 6 8 6-8 6 8 6-8 4 8z" fill="#7a8a4a"/><circle cx="92" cy="150" r="5" fill="#5e6b35"/><path d="M104 170l8 6" stroke="#5e6b35" stroke-width="3"/>` },
+        { id: "arms", label: "reaching arms", svg: `<path d="M86 128l-26 4" stroke="#7a8a4a" stroke-width="12" stroke-linecap="round"/><path d="M114 128l26 4" stroke="#7a8a4a" stroke-width="12" stroke-linecap="round"/><circle cx="56" cy="132" r="7" fill="#8fbf6a"/><circle cx="144" cy="132" r="7" fill="#8fbf6a"/>` },
+        { id: "head", label: "head", svg: `<rect x="95" y="104" width="10" height="16" fill="#8fbf6a"/><ellipse cx="100" cy="88" rx="20" ry="22" fill="#8fbf6a"/><circle cx="92" cy="86" r="5" fill="#fff"/><circle cx="92" cy="86" r="2" fill="#222"/><circle cx="108" cy="88" r="3" fill="#222"/><path d="M90 100h20" stroke="#222" stroke-width="2.5"/><path d="M94 98v4M100 98v4M106 98v4" stroke="#222" stroke-width="1.5"/>` },
+        { id: "hair", label: "messy hair", svg: `<path d="M80 80l4-14 6 8 4-12 6 10 6-12 4 12 6-8 4 16" stroke="#4a3a2a" stroke-width="5" fill="none" stroke-linejoin="round"/>` },
+        { id: "bandage", label: "bandage", svg: `<path d="M82 76l36 10" stroke="#fff" stroke-width="6"/><path d="M96 80l2 6" stroke="#ccc" stroke-width="1.5"/>` },
+        { id: "sign", label: "\"Hug me\" sign", svg: `<rect x="128" y="160" width="46" height="30" rx="4" fill="#fff4d6" stroke="#8a5a2b" stroke-width="3"/><text x="151" y="180" text-anchor="middle" font-size="11" font-weight="700" fill="#5a2a00" font-family="system-ui">HUG ME</text><path d="M151 190v40" stroke="#8a5a2b" stroke-width="4"/>` },
+      ] },
+      { id: "werewolf", name: "Werewolf", parts: [
+        STAND,
+        { id: "legs", label: "furry legs", svg: `<path d="M84 200h14v60h-14z M102 200h14v60h-14z" fill="#7a5230"/><path d="M80 260h20l2 10h-24z M100 260h20l2 10h-24z" fill="#5a3a20"/><path d="M80 270l3-4 3 4 3-4 3 4M100 270l3-4 3 4 3-4 3 4" stroke="#fff" stroke-width="1.5" fill="none"/>` },
+        { id: "shirt", label: "plaid shirt", svg: `<path d="M84 118h32l4 86H80z" fill="#c0392b"/><path d="M80 140h40M80 166h40M80 190h40M92 118v86M108 118v86" stroke="#7b1d14" stroke-width="3"/><path d="M84 204l6-6 6 6 6-6 6 6 6-6 6 6" fill="none" stroke="#7a5230" stroke-width="3"/>` },
+        { id: "arms", label: "fuzzy arms", svg: `<path d="M86 124l-22 44" stroke="#c0392b" stroke-width="12" stroke-linecap="round"/><path d="M114 124l22 44" stroke="#c0392b" stroke-width="12" stroke-linecap="round"/><circle cx="62" cy="172" r="8" fill="#7a5230"/><circle cx="138" cy="172" r="8" fill="#7a5230"/>` },
+        { id: "head", label: "head", svg: `<rect x="94" y="104" width="12" height="16" fill="#7a5230"/><ellipse cx="100" cy="88" rx="21" ry="22" fill="#7a5230"/><ellipse cx="100" cy="98" rx="12" ry="9" fill="#c9a27a"/><circle cx="100" cy="92" r="4" fill="#222"/><circle cx="91" cy="82" r="3.5" fill="#ffd27a"/><circle cx="109" cy="82" r="3.5" fill="#ffd27a"/><path d="M94 102q6 4 12 0" stroke="#222" stroke-width="2" fill="none"/>` },
+        { id: "ears", label: "pointy ears", svg: `<path d="M80 76l2-22 14 16z M120 76l-2-22-14 16z" fill="#5a3a20"/><path d="M84 70l1-10 6 7z M116 70l-1-10-6 7z" fill="#c9a27a"/>` },
+        { id: "fur", label: "fluffy fur", svg: `<path d="M79 92l-6 4 6 2-5 6 7 0M121 92l6 4-6 2 5 6-7 0" stroke="#5a3a20" stroke-width="3" fill="none"/>` },
+        { id: "moon", label: "full moon", svg: `<circle cx="162" cy="40" r="20" fill="#fff6c8"/><circle cx="156" cy="36" r="4" fill="#efe3a0"/><circle cx="168" cy="48" r="3" fill="#efe3a0"/>` },
+      ] },
+      { id: "vampire", name: "Vampire", parts: [
+        STAND,
+        { id: "legs", label: "pants & shiny shoes", svg: `<path d="M84 200h14v62h-14z M102 200h14v62h-14z" fill="#1d1d2b"/><path d="M78 262h20v10h-24z M102 262h20l4 10h-24z" fill="#111"/><path d="M82 264h10M106 264h10" stroke="#888" stroke-width="2"/>` },
+        { id: "suit", label: "fancy suit", svg: `<path d="M84 118h32l4 86H80z" fill="#1d1d2b"/><path d="M92 118h16l-8 40z" fill="#fff"/><path d="M96 122l4 4 4-4-4 6z" fill="#c0392b"/><circle cx="100" cy="170" r="2.5" fill="#ffd27a"/><circle cx="100" cy="186" r="2.5" fill="#ffd27a"/>` },
+        { id: "arms", label: "arms", svg: `<path d="M86 124l-20 46" stroke="#1d1d2b" stroke-width="12" stroke-linecap="round"/><path d="M114 124l20 46" stroke="#1d1d2b" stroke-width="12" stroke-linecap="round"/><circle cx="65" cy="174" r="6" fill="#e8e0f0"/><circle cx="135" cy="174" r="6" fill="#e8e0f0"/>` },
+        { id: "head", label: "head", svg: `<rect x="95" y="104" width="10" height="16" fill="#e8e0f0"/><ellipse cx="100" cy="88" rx="19" ry="22" fill="#e8e0f0"/><circle cx="92" cy="86" r="3" fill="#7b1d14"/><circle cx="108" cy="86" r="3" fill="#7b1d14"/><path d="M92 98q8 6 16 0" stroke="#222" stroke-width="2.5" fill="none"/><path d="M95 100l2 5 2-4M101 101l2 4 2-5" fill="#fff" stroke="#999" stroke-width=".5"/>` },
+        { id: "hair", label: "slick hair", svg: `<path d="M80 84q0-26 20-26t20 26q-8-10-20-4-12-6-20 4z" fill="#111"/><path d="M100 66l-4 12 4-4 4 4z" fill="#111"/>` },
+        { id: "cape", label: "big cape", svg: `<path d="M84 118L52 214l20-8 10 10 8-12M116 118l32 96-20-8-10 10-8-12" fill="#7b1d14" stroke="#4a0f0a" stroke-width="2"/><path d="M78 118l-10-14 32 12 32-12-10 14z" fill="#7b1d14"/>` },
+        { id: "bat", label: "pet bat", svg: `<path d="M150 50q8-10 14 0 6-10 14 0-4 4-14 4-10 0-14-4z" fill="#1b1230"/><circle cx="164" cy="52" r="5" fill="#1b1230"/><circle cx="162" cy="51" r="1" fill="#ffd27a"/><circle cx="166" cy="51" r="1" fill="#ffd27a"/>` },
+      ] },
+      { id: "mummy", name: "Mummy", parts: [
+        STAND,
+        { id: "legs", label: "wrapped legs", svg: `<path d="M84 200h14v70h-16z M102 200h14v70h-16z" fill="#efe6cf"/>${[0,1,2,3,4,5].map(i=>`<path d="M82 ${206+i*11}l16-4M100 ${206+i*11}l16-4" stroke="#c9bb98" stroke-width="2"/>`).join("")}` },
+        { id: "body", label: "wrapped body", svg: `<path d="M84 118h32l2 86H82z" fill="#efe6cf"/>${[0,1,2,3,4,5,6].map(i=>`<path d="M82 ${126+i*11}l36-6" stroke="#c9bb98" stroke-width="2"/>`).join("")}` },
+        { id: "arms", label: "stretchy arms", svg: `<path d="M86 126l-28 6" stroke="#efe6cf" stroke-width="12" stroke-linecap="round"/><path d="M114 126l28 6" stroke="#efe6cf" stroke-width="12" stroke-linecap="round"/><path d="M70 124l2 12M128 124l-2 12" stroke="#c9bb98" stroke-width="2"/>` },
+        { id: "head", label: "head", svg: `<rect x="95" y="104" width="10" height="16" fill="#efe6cf"/><ellipse cx="100" cy="88" rx="20" ry="22" fill="#efe6cf"/><path d="M80 76l40 6M80 96l40-4M82 104l36 2" stroke="#c9bb98" stroke-width="2"/>` },
+        { id: "eyes", label: "peeking eyes", svg: `<rect x="84" y="82" width="32" height="10" rx="4" fill="#1b1230"/><circle cx="92" cy="87" r="3.5" fill="#fff"/><circle cx="108" cy="87" r="3.5" fill="#fff"/><circle cx="93" cy="87" r="1.5" fill="#222"/><circle cx="109" cy="87" r="1.5" fill="#222"/>` },
+        { id: "tail", label: "loose wrap", svg: `<path d="M116 150q20 10 14 34t12 30" stroke="#efe6cf" stroke-width="7" fill="none" stroke-linecap="round"/>` },
+        { id: "bow", label: "party bow", svg: `<path d="M100 66l-14-8v16zM100 66l14-8v16z" fill="#ff8c1a"/><circle cx="100" cy="66" r="4" fill="#c06010"/>` },
       ] },
     ],
   },
@@ -34,5 +76,21 @@ export const halloween: Theme = {
     { word: "HAUNTED HOUSE", hint: "Spooky place" }, { word: "CANDY CORN", hint: "Tri-color treat" },
     { word: "MONSTER", hint: "Friendly or not" }, { word: "WEB", hint: "Spider makes it" },
   ],
-  sounds: { place: [440, 660], win: [523, 659, 784] },
+  sounds: {
+    sfx: {
+      tap: [{ f: 880, d: 0.04, wave: "sine", v: 0.4 }],
+      place: [{ f: 520, d: 0.08, wave: "triangle" }, { f: 780, d: 0.1, at: 0.06, wave: "triangle" }],
+      box: [{ f: 660, d: 0.08 }, { f: 990, d: 0.14, at: 0.07 }],
+      combo: [{ f: 660, d: 0.07 }, { f: 880, d: 0.07, at: 0.06 }, { f: 1320, d: 0.16, at: 0.12 }],
+      right: [{ f: 700, d: 0.07, wave: "sine" }, { f: 1050, d: 0.12, at: 0.06, wave: "sine" }],
+      wrong: [{ f: 300, d: 0.22, wave: "sine", to: 190, v: 0.7 }],
+      part: [{ f: 220, d: 0.12, wave: "square", v: 0.35 }, { f: 330, d: 0.18, at: 0.1, wave: "sine", to: 280 }],
+      win: [{ f: 523, d: 0.12 }, { f: 659, d: 0.12, at: 0.12 }, { f: 784, d: 0.12, at: 0.24 }, { f: 1047, d: 0.35, at: 0.36 }],
+      lose: [{ f: 440, d: 0.25, wave: "sine", to: 415 }, { f: 370, d: 0.25, at: 0.25, wave: "sine", to: 349 }, { f: 294, d: 0.5, at: 0.5, wave: "sine", to: 262 }],
+    },
+    // Original playful "spooky" loop: A minor-ish with a raised 6th (dorian), bouncy bass.
+    music: { bpm: 112, root: 220, scale: [0, 2, 3, 5, 7, 9, 10, 12, 14, 15], wave: "triangle", bassWave: "sine",
+      bass:   [0, null, 4, null, 3, null, 4, null, 0, null, 4, null, 5, null, 4, null],
+      melody: [7, null, 5, 6, 7, null, 9, null, 8, 7, 5, null, 4, null, null, null] },
+  },
 };

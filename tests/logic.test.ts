@@ -149,11 +149,32 @@ describe("mannequin parts", () => {
     const misses = "BDEFGHIJKLMN".slice(0, mq.parts.length).split("");
     misses.forEach((l, i) => { s = M.guess(s, l); expect(M.partsPlaced(s)).toBe(i + 1); expect(s.status).toBe(i + 1 < mq.parts.length ? "playing" : "lost"); });
   });
-  it("halloween has a data-driven witch with 6-8 ordered parts", () => {
+  it("rotation goes in order and wraps", () => {
+    const n = pickTheme("?theme=halloween").mannequin.mannequins.length;
+    expect(n).toBe(5);
+    const seq: number[] = []; let i = -1; for (let k = 0; k < 7; k++) { i = M.nextRotation(i, n); seq.push(i); }
+    expect(seq).toEqual([0, 1, 2, 3, 4, 0, 1]);
+    expect(M.nextRotation(NaN, n)).toBe(0);
+    expect(pickTheme("?theme=halloween").mannequin.mannequins.map((m) => m.id)).toEqual(["witch", "zombie", "werewolf", "vampire", "mummy"]);
+  });
+  it("halloween mannequins each have 6-8 ordered parts", () => {
     for (const mq of pickTheme("?theme=halloween").mannequin.mannequins) {
       expect(mq.parts.length).toBeGreaterThanOrEqual(6); expect(mq.parts.length).toBeLessThanOrEqual(8);
       expect(mq.parts[0].id).toBe("stand"); expect(new Set(mq.parts.map((p) => p.id)).size).toBe(mq.parts.length);
     }
+  });
+});
+
+describe("win line + sound pack", () => {
+  it("winLine finds the line for cells and boxes", () => {
+    expect(T.winLine([0,0,2,0,2,0,2,0,0])).toEqual([2,4,6]);
+    expect(T.winLine([1,"draw",1,null,null,null,null,null,null])).toBe(null);
+    expect(T.winLine([null,null,null,2,2,2,null,null,null])).toEqual([3,4,5]);
+  });
+  it("theme has every sfx + a music loop", () => {
+    const snd = pickTheme("?theme=halloween").sounds;
+    for (const k of ["place","box","combo","right","wrong","part","win","lose","tap"]) expect((snd.sfx as any)[k].length).toBeGreaterThan(0);
+    expect(snd.music.melody.length).toBe(snd.music.bass.length);
   });
 });
 

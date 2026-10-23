@@ -1,10 +1,13 @@
 import "./style.css";
 import { pickTheme } from "./themes";
 import { GAMES, type GameHandle, type Mode, type Level } from "./games";
-import { h, applyTheme } from "./ui";
+import { h, applyTheme, audioToggles } from "./ui";
+import { useSounds, unlockOnFirstTap } from "./audio";
 
 const theme = pickTheme();
 applyTheme(theme);
+useSounds(theme.sounds);
+unlockOnFirstTap();
 const app = document.getElementById("app")!;
 const q = new URLSearchParams(location.search);
 const opts = {
@@ -28,7 +31,7 @@ function menu() {
   app.innerHTML = ""; app.append(deco());
   const m = h("div", { class: "menu" },
     h("h1", {}, `${theme.pieces.p1.emoji} ${theme.title} ${theme.pieces.p2.emoji}`),
-    h("p", { class: "sub" }, `${theme.name} edition · pick a game`));
+    h("p", { class: "sub" }, `${theme.name} edition · pick a game`), audioToggles());
   for (const [id, g] of Object.entries(GAMES))
     m.append(h("div", { class: "card" }, h("button", { class: "play", onclick: () => options(id) }, h("span", { class: "icon" }, g.icon), h("span", {}, h("b", {}, g.name), h("small", {}, g.blurb)))));
   app.append(m);

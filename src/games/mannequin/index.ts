@@ -1,6 +1,8 @@
 import type { GameOpts, GameHandle } from "../types";
 import type { Mannequin } from "../../themes/types";
-import { h, frame, beep } from "../../ui";
+import { h, frame } from "../../ui";
+import { sfx } from "../../audio";
+import { burst } from "../../fx";
 import * as L from "./logic";
 
 /** Storefront window + display stand, drawn in SVG. Parts are layered in order. */
@@ -18,10 +20,10 @@ function storefront(store: string, mq: Mannequin, placed: number, state: L.Manne
   <path d="M50 120l40 0-30 40z" fill="#fff" opacity=".25"/>
   <rect x="36" y="350" width="288" height="22" fill="#a0643a"/>
   <text x="62" y="345" font-size="28">🎃</text><text x="276" y="345" font-size="24">🍬</text><text x="290" y="140" font-size="22">🕸️</text>
-  <g transform="translate(80 72)">
+  <g transform="translate(80 72)"><g class="mq ${state === "lost" ? "dance" : ""}">
     ${placed === 0 ? `<g opacity=".18"><rect x="70" y="282" width="60" height="8" rx="4" fill="#4a3a2a"/><rect x="97" y="200" width="6" height="84" fill="#4a3a2a"/></g>` : ""}
     ${parts}
-  </g>
+  </g></g>
 </svg>`;
 }
 
@@ -29,8 +31,14 @@ export function mount(el: HTMLElement, opts: GameOpts): GameHandle {
   const t = opts.theme, m = t.mannequin;
   let last = -1, lastPart: string | undefined;
   const pickWord = () => { let i; do i = Math.floor(Math.random() * t.words.length); while (i === last && t.words.length > 1); last = i; return t.words[i]; };
-  const pickMq = () => m.mannequins[Math.floor(Math.random() * m.mannequins.length)];
-  let mq = pickMq();
+  /** Rotation: each round uses the next mannequin in theme order; index persisted per theme. */
+  const KEY = `papergames:mq:${t.id}`;
+  const pickMq = () => {
+    let i = 0; try { i = L.nextRotation(parseInt(localStorage.getItem(KEY) ?? "-1", 10), m.mannequins.length); localStorage.setItem(KEY, String(i)); } catch {}
+    return m.mannequins[Number.isFinite(i) ? i : 0];
+  };
+  const fill = (txt: string) => txt.replace(/\{name\}/g, mq.name.toLowerCase());
+  let mq: Mannequin = m.mannequins[0];
   let s = start();
   function start() { const w = pickWord(); mq = pickMq(); lastPart = undefined; return L.newMannequin(w.word, w.hint, mq.parts.length); }
   const F = frame(el, "Hang Mannequin", opts.onExit, reset);
@@ -43,14 +51,14 @@ export function mount(el: HTMLElement, opts: GameOpts): GameHandle {
     F.body.innerHTML = "";
     const inp = h("input", { class: "secret", type: "password", maxLength: 16, placeholder: "secret word", autocomplete: "off" }) as HTMLInputElement;
     const hint = h("input", { class: "secret", type: "text", maxLength: 30, placeholder: "hint (optional)" }) as HTMLInputElement;
-    const go = () => { const w = inp.value.toUpperCase().replace(/[^A-Z ]/g, "").trim(); if (!L.uniqueLetters(w).length) return; mq = pickMq(); s = L.newMannequin(w, hint.value || "Player 1's word", mq.parts.length); setup = false; render(); };
+    const go = () => { const w = inp.value.toUpperCase().replace(/[^A-Z ]/g, "").trim(); if (!L.uniqueLetters(w).length) return; s = L.newMannequin(w, hint.value || "Player 1's word", mq.parts.length); setup = false; render(); };
     F.body.append(inp, hint, h("button", { class: "btn", onclick: go }, "Start ▶"),
       h("button", { class: "btn ghost", onclick: () => { setup = false; render(); } }, `Use a ${t.name} word instead`));
   }
   function render() {
     if (setup) return renderSetup();
     const placed = L.partsPlaced(s), left = s.maxWrong - placed;
-    F.status.textContent = s.status === "won" ? `🎉 ${m.winText}` : s.status === "lost" ? `${m.loseText} The word was ${s.word}.`
+    F.status.textContent = s.status === "won" ? `🎉 ${fill(m.winText)}` : s.status === "lost" ? `${fill(m.loseText)} The word was ${s.word}.`
       : `Hint: ${s.hint} · ${left} miss${left === 1 ? "" : "es"} left before the ${mq.name.toLowerCase()} is finished`;
     F.body.innerHTML = "";
     const win = h("div", { class: "window2" }); win.innerHTML = storefront(m.storeName, mq, placed, s.status, lastPart);
@@ -69,8 +77,10 @@ export function mount(el: HTMLElement, opts: GameOpts): GameHandle {
     const n = L.guess(s, k); if (n === s) return;
     const good = n.guessed.length > s.guessed.length; s = n;
     lastPart = good ? undefined : mq.parts[L.partsPlaced(s) - 1]?.id;
-    beep(s.status === "won" ? t.sounds?.win : good ? t.sounds?.place : [220]);
     render();
+    if (s.status === "won") { sfx("win"); const r = F.body.querySelector(".window2")!.getBoundingClientRect(); burst(["🍬", "🍭", "🍫", "🎃", "⭐"], r.left + r.width / 2, r.top + r.height / 2); }
+    else if (s.status === "lost") { sfx("part"); setTimeout(() => sfx("lose"), 250); }
+    else sfx(good ? "right" : "part");
   }
   function reset() { s = start(); setup = opts.mode === "2p"; render(); }
   render();

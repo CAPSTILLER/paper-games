@@ -3,6 +3,11 @@ export type P = 1 | 2;
 export type Cell = 0 | P;
 export const LINES = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
 
+/** Indices of the winning line, or null. Works for cells and for super boxes. */
+export function winLine(b: (Cell | BoxResult)[]): number[] | null {
+  for (const l of LINES) { const v = b[l[0]]; if ((v === 1 || v === 2) && v === b[l[1]] && v === b[l[2]]) return l; }
+  return null;
+}
 /** Returns winner (1|2), "draw" if full with no winner, or null if still open. */
 export function boardResult(b: Cell[]): P | "draw" | null {
   for (const [a, c, d] of LINES) if (b[a] && b[a] === b[c] && b[a] === b[d]) return b[a] as P;

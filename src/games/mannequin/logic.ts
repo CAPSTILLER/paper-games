@@ -29,3 +29,5 @@ export const partsPlaced = (s: MannequinState) => Math.min(s.wrong.length, s.max
 export const progress = (s: MannequinState) => s.guessed.length / uniqueLetters(s.word).length;
 /** Number of display pieces (of `total`) to show. */
 export const piecesShown = (s: MannequinState, total: number) => s.status === "won" ? total : Math.min(total, Math.floor(progress(s) * total));
+/** Next mannequin index in rotation (prev = -1 or garbage -> 0). */
+export const nextRotation = (prev: number, n: number) => (Number.isFinite(prev) && prev >= 0 ? (prev + 1) % n : 0);

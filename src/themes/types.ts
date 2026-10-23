@@ -19,8 +19,18 @@ export interface Theme {
     mannequins: Mannequin[];
   };
   words: { word: string; hint: string }[];
-  sounds?: { place?: number[]; win?: number[] }; // optional tone frequencies (Hz)
+  /** Sound pack (all synthesized with Web Audio; no audio files). Swap per holiday. */
+  sounds: SoundPack;
 }
 
 export interface MannequinPart { id: string; label: string; svg: string }
 export interface Mannequin { id: string; name: string; parts: MannequinPart[] }
+
+/** One synthesized note: frequency Hz, duration s, optional start offset, wave, slide-to frequency, volume 0-1. */
+export interface Note { f: number; d: number; at?: number; wave?: OscillatorType; to?: number; v?: number }
+export type SfxName = "place" | "box" | "combo" | "right" | "wrong" | "part" | "win" | "lose" | "tap";
+export interface SoundPack {
+  sfx: Record<SfxName, Note[]>;
+  /** Procedural music loop: notes are scale degrees (0-based, null = rest), one per step. */
+  music: { bpm: number; root: number; scale: number[]; bass: (number | null)[]; melody: (number | null)[]; wave: OscillatorType; bassWave: OscillatorType };
+}

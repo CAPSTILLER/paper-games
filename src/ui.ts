@@ -8,17 +8,15 @@ export function h<K extends keyof HTMLElementTagNameMap>(tag: K, props: Record<s
   }
   kids.forEach((k) => e.append(k)); return e;
 }
-let ctx: AudioContext | null = null;
-export function beep(freqs: number[] | undefined, dur = 0.09) {
-  if (!freqs) return;
-  try {
-    ctx ??= new AudioContext();
-    freqs.forEach((f, i) => {
-      const o = ctx!.createOscillator(), g = ctx!.createGain(), t = ctx!.currentTime + i * dur;
-      o.frequency.value = f; o.type = "triangle"; g.gain.setValueAtTime(0.08, t); g.gain.exponentialRampToValueAtTime(0.001, t + dur);
-      o.connect(g).connect(ctx!.destination); o.start(t); o.stop(t + dur);
-    });
-  } catch {}
+import * as A from "./audio";
+/** Music + SFX toggle buttons (state saved in localStorage). */
+export function audioToggles() {
+  const mk = (kind: "music" | "sfx", on: string, off: string) => {
+    const b = h("button", { class: "tog", "aria-label": kind }) as HTMLButtonElement;
+    const paint = () => { b.textContent = A.settings[kind] ? on : off; b.classList.toggle("off", !A.settings[kind]); };
+    b.onclick = (e) => { e.stopPropagation(); A.toggle(kind); paint(); }; paint(); return b;
+  };
+  return h("div", { class: "togs" }, mk("music", "🎵 Music", "🎵 Off"), mk("sfx", "🔊 Sounds", "🔇 Off"));
 }
 export function applyTheme(t: Theme, root: HTMLElement = document.documentElement) {
   for (const [k, v] of Object.entries(t.colors)) root.style.setProperty("--" + k, v);
@@ -32,7 +30,7 @@ export function frame(el: HTMLElement, title: string, onExit: (() => void) | und
     onExit ? h("button", { class: "btn small", onclick: onExit }, "← Menu") : h("span"),
     h("div", { class: "title" }, title),
     h("button", { class: "btn small", onclick: onReset }, "↻ New"));
-  const wrap = h("div", { class: "game" }, bar, status, body);
+  const wrap = h("div", { class: "game" }, bar, audioToggles(), status, body);
   el.append(wrap);
   return { status, body, wrap };
 }
