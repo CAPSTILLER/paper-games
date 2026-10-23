@@ -40,7 +40,7 @@ function menu() {
   const tips = h("div", { class: "tips" });
   mountTipJar(tips, { stripeUrl: TIP_STRIPE, wallet: TIP_WALLET, message: "Gears turning for future mechanics — thanks for the support!" });
   m.append(h("footer", { class: "foot" }, tips,
-    h("a", { class: "gearlink", href: "https://gearup.wtf", target: "_blank", rel: "noopener noreferrer", title: "gearup.wtf" }, h("img", { src: "/gear-logo.png", alt: "GEAR", width: 22, height: 22 })),
+    h("a", { class: "gearlink", href: "https://landonthis.gearup.wtf", target: "_blank", rel: "noopener noreferrer", "aria-label": "GEAR" }, h("img", { src: "/gear-logo-cutout.png", alt: "GEAR", width: 80, height: 20 })),
     h("span", { class: "gearmsg" }, "Gears turning for future mechanics")));
   app.append(m);
   history.replaceState(null, "", keepTheme());
