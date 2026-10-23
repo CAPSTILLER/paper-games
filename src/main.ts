@@ -2,6 +2,9 @@ import "./style.css";
 import { pickTheme } from "./themes";
 import { GAMES, type GameHandle, type Mode, type Level } from "./games";
 import { h, applyTheme, audioToggles } from "./ui";
+import { mountTipJar } from "./tipjar/tipjar";
+const TIP_STRIPE = "https://buy.stripe.com/cNi00labZ2y98uc20v9oc00";
+const TIP_WALLET = "0x604b2e24df58ef019312b8367af763a7f156bf08";
 import { useSounds, unlockOnFirstTap } from "./audio";
 
 const theme = pickTheme();
@@ -34,6 +37,11 @@ function menu() {
     h("p", { class: "sub" }, `${theme.name} edition · pick a game`), audioToggles());
   for (const [id, g] of Object.entries(GAMES))
     m.append(h("div", { class: "card" }, h("button", { class: "play", onclick: () => options(id) }, (theme.art?.[id] ? h("img", { class: "thumb", src: theme.art[id], alt: g.name, width: 72, height: 72 }) : h("span", { class: "icon" }, g.icon)), h("span", {}, h("b", {}, g.name), h("small", {}, g.blurb)))));
+  const tips = h("div", { class: "tips" });
+  mountTipJar(tips, { stripeUrl: TIP_STRIPE, wallet: TIP_WALLET, message: "Gears turning for future mechanics — thanks for the support!" });
+  m.append(h("footer", { class: "foot" }, tips,
+    h("a", { class: "gearlink", href: "https://gearup.wtf", target: "_blank", rel: "noopener noreferrer", title: "gearup.wtf" }, h("img", { src: "/gear-logo.png", alt: "GEAR", width: 22, height: 22 })),
+    h("span", { class: "gearmsg" }, "Gears turning for future mechanics")));
   app.append(m);
   history.replaceState(null, "", keepTheme());
 }

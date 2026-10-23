@@ -3,6 +3,6 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "scripts": { "dev": "vite", "build": "tsc --noEmit && vite build", "preview": "vite preview", "test": "vitest run" },
+  "scripts": { "dev": "vite", "build": "tsc --noEmit && vite build", "preview": "vite preview", "test": "vitest run", "build:tipjar": "esbuild src/tipjar/tipjar.ts --bundle --format=iife --global-name=TipJar --minify --outfile=public/tipjar/tipjar.js" },
   "devDependencies": { "typescript": "^5.5.4", "vite": "^5.4.0", "vitest": "^2.0.5" }
 }
