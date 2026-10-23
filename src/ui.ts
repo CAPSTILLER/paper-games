@@ -30,8 +30,9 @@ export function frame(el: HTMLElement, title: string, onExit: (() => void) | und
   const monster = h("div", { class: "monster" }, audioToggles(),
     onExit ? h("button", { class: "btn mbtn m1", onclick: onExit }, h("i", { class: "eyes" }), "← Menu") : h("span"),
     h("button", { class: "btn mbtn m2", onclick: onReset }, "↻ New", h("i", { class: "teeth" })));
-  const bar = h("div", { class: "hdr" }, h("h2", { class: "title" }, title), monster);
+  const info = h("p", { class: "info" });
+  const bar = h("div", { class: "hdr" }, h("div", { class: "hleft" }, h("h2", { class: "title" }, title), info), monster);
   const wrap = h("div", { class: "game" }, bar, status, body);
   el.append(wrap);
-  return { status, body, wrap };
+  return { status, body, wrap, info };
 }

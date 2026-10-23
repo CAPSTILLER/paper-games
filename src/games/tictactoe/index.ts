@@ -32,7 +32,7 @@ export function mount(el: HTMLElement, opts: GameOpts): GameHandle {
     F.status.innerHTML = "";
     F.status.append(h("span", { class: "turnchip" }, statusText()));
     F.body.innerHTML = "";
-    F.body.append(h("div", { class: "hint" }, hintText()));
+    F.info.textContent = hintText();
     if (!superMode) {
       const g = h("div", { class: "ttt big" });
       const wl = L.winLine(c.board) ?? [];

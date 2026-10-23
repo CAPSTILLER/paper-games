@@ -107,3 +107,11 @@ canvas.dots{touch-action:none;background:var(--panel);border-radius:14px}
 .mq-game .keys{flex:none;gap:5px}.mq-game .key{min-height:42px;padding:0;font-size:17px}
 .keys.done{display:flex;justify-content:center;align-items:center;height:calc(4 * 42px + 15px)}
 @media (min-height:880px){.mq-game .key{min-height:52px}.keys.done{height:calc(4*52px + 15px)}.awning{font-size:11.5px}}
+/* --- round 5: info under title, lowered monster, thumbnails --- */
+.hleft{flex:1;min-width:0}
+.info{margin:4px 0 0 4px;font-size:12.5px;line-height:1.3;opacity:.85;text-align:left;max-width:30ch}
+.info:empty{display:none}
+.monster{gap:6px}.monster .togs{margin-bottom:12px}
+.mbtn.m2{margin-top:2px}
+.game .hint{display:none}
+.thumb{width:72px;height:72px;border-radius:14px;object-fit:cover;flex:none;border:2px solid var(--line)}

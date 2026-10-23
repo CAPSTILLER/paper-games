@@ -6,6 +6,7 @@ export const halloween: Theme = {
     p1: "#ff8c1a", p2: "#c9b8ff", line: "#7a5cb8", dot: "#ffd27a" },
   pieces: { p1: { emoji: "🎃", name: "Pumpkin" }, p2: { emoji: "👻", name: "Ghost" } },
   decorations: ["🦇", "🕸️", "🍬", "🌙", "🕷️", "🍭"],
+  art: { tictactoe: "/halloween/tictactoe.webp", dots: "/halloween/dots.webp", mannequin: "/halloween/mannequin.webp" },
   mannequin: {
     storeName: "Boo Boutique",
     winText: "You solved it before the {name} was finished!",

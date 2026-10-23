@@ -33,7 +33,7 @@ function menu() {
     h("h1", {}, `${theme.pieces.p1.emoji} ${theme.title} ${theme.pieces.p2.emoji}`),
     h("p", { class: "sub" }, `${theme.name} edition · pick a game`), audioToggles());
   for (const [id, g] of Object.entries(GAMES))
-    m.append(h("div", { class: "card" }, h("button", { class: "play", onclick: () => options(id) }, h("span", { class: "icon" }, g.icon), h("span", {}, h("b", {}, g.name), h("small", {}, g.blurb)))));
+    m.append(h("div", { class: "card" }, h("button", { class: "play", onclick: () => options(id) }, (theme.art?.[id] ? h("img", { class: "thumb", src: theme.art[id], alt: g.name, width: 72, height: 72 }) : h("span", { class: "icon" }, g.icon)), h("span", {}, h("b", {}, g.name), h("small", {}, g.blurb)))));
   app.append(m);
   history.replaceState(null, "", keepTheme());
 }

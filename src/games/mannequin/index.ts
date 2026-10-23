@@ -48,6 +48,7 @@ export function mount(el: HTMLElement, opts: GameOpts): GameHandle {
   window.addEventListener("keydown", onKey);
 
   function renderSetup() {
+    F.info.textContent = "2 players: one picks a secret word, the other guesses.";
     F.wrap.classList.remove("mq-game");
     F.status.textContent = "Player 1: type a secret word (Player 2 looks away!)";
     F.body.innerHTML = "";
@@ -59,6 +60,7 @@ export function mount(el: HTMLElement, opts: GameOpts): GameHandle {
   }
   function render() {
     if (setup) return renderSetup();
+    F.info.textContent = "Guess the letters. Each miss adds a piece to the mannequin. Solve the word before it's finished!";
     F.wrap.classList.add("mq-game"); F.status.textContent = "";
     const placed = L.partsPlaced(s), left = s.maxWrong - placed;
     const msg = s.status === "won" ? `🎉 ${fill(m.winText)}` : s.status === "lost" ? `${fill(m.loseText)} The word was ${s.word}.`

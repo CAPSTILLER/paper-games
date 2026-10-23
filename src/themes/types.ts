@@ -11,6 +11,8 @@ export interface Theme {
   pieces: { p1: { emoji: string; name: string }; p2: { emoji: string; name: string } };
   /** Floating decorations for the background / window display */
   decorations: string[];
+  /** Menu card pictures per game id (paths under public/). */
+  art: Record<string, string>;
   mannequin: {
     storeName: string;
     winText: string; loseText: string;

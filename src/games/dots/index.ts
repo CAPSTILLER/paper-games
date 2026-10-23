@@ -49,7 +49,8 @@ export function mount(el: HTMLElement, opts: GameOpts): GameHandle {
                  h("span", { class: s.turn === 2 && !s.over ? "on p2" : "p2" }, `${t.pieces.p2.emoji} ${s.score[1]}`));
     F.status.textContent = win === "draw" ? "It's a tie! 🤝" : win ? `${win === 1 ? t.pieces.p1.emoji + " " + t.pieces.p1.name : t.pieces.p2.emoji + " " + t.pieces.p2.name} wins! 🎉`
       : (cpu && s.turn === 2 ? "🤖 Computer's turn" : `${s.turn === 1 ? t.pieces.p1.emoji + " " + t.pieces.p1.name : t.pieces.p2.emoji + " " + t.pieces.p2.name}'s turn`)
-        + (combo ? ` · 🔥 combo x${combo} — go again!` : " · tap a line between two dots. Close a box to go again!");
+        + (combo ? ` · 🔥 combo x${combo}!` : "");
+    F.info.textContent = "Tap a line between two dots. Close a box to score and go again!";
   }
   /** Nearest edge to a point (in CSS px), within half a gap. */
   function edgeAt(x: number, y: number): L.Edge | null {
