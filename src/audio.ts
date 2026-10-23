@@ -43,18 +43,43 @@ function tick() {
   }
 }
 export function startMusic() {
-  if (!settings.music || !unlocked || musicTimer || !pack) return;
-  const c = ac(); c.resume(); nextT = c.currentTime + 0.05;
+  if (!settings.music || musicTimer || !pack) return;
+  let c: AudioContext; try { c = ac(); } catch { return; }
+  if (c.state !== "running") c.resume().catch(() => {});
+  nextT = c.currentTime + 0.05;
   musicTimer = window.setInterval(tick, 50); tick();
 }
+/** True when the music scheduler is on AND the audio context is actually running. */
+export function musicPlaying() { return !!musicTimer && ctx?.state === "running"; }
 export function stopMusic() { clearInterval(musicTimer); musicTimer = 0; }
 export function toggle(kind: "music" | "sfx") {
   settings[kind] = !settings[kind]; set(LS[kind], settings[kind]);
   if (kind === "music") settings.music ? startMusic() : stopMusic();
   return settings[kind];
 }
-/** Audio may only start after a user gesture. */
+/**
+ * Autoplay: try on load (works when Chrome's autoplay policy allows it), and otherwise on the first
+ * real user activation. On Android Chrome `pointerdown`/`touchstart` do NOT count as activation, so
+ * resume() there silently fails — we also listen to touchend/click/pointerup/keydown and keep
+ * retrying until the context is actually running.
+ */
+const GESTURES = ["pointerdown", "touchstart", "touchend", "pointerup", "click", "keydown"] as const;
 export function unlockOnFirstTap() {
-  const go = () => { unlocked = true; try { ac().resume(); } catch {} startMusic(); window.removeEventListener("pointerdown", go); window.removeEventListener("keydown", go); };
-  window.addEventListener("pointerdown", go); window.addEventListener("keydown", go);
+  const done = () => GESTURES.forEach((e) => window.removeEventListener(e, go, true));
+  const go = () => {
+    unlocked = true;
+    let c: AudioContext; try { c = ac(); } catch { return; }
+    const after = () => { if (c.state === "running") { done(); nextT = Math.max(nextT, c.currentTime + 0.05); } };
+    if (c.state !== "running") c.resume().then(after, () => {}); else after();
+    startMusic(); // no-op if already scheduled
+  };
+  GESTURES.forEach((e) => window.addEventListener(e, go, { capture: true, passive: true }));
+  // Attempt on load (may be allowed; if not, the context stays suspended until a gesture).
+  try {
+    const c = ac();
+    c.resume().then(() => { if (c.state === "running") { unlocked = true; done(); startMusic(); } }, () => {});
+    if (settings.music) startMusic();
+  } catch {}
 }
+// Read-only debug hook (used by Playwright checks).
+(globalThis as any).__pgAudio = { state: () => ctx?.state ?? "none", playing: musicPlaying, music: () => settings.music };
