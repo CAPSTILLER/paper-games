@@ -4,7 +4,7 @@ import { GAMES, type GameHandle, type Mode, type Level } from "./games";
 import { h, applyTheme, audioToggles } from "./ui";
 import { mountTipJar } from "./tipjar/tipjar";
 const TIP_STRIPE = "https://buy.stripe.com/cNi00labZ2y98uc20v9oc00";
-const TIP_WALLET = "0x604b2e24df58ef019312b8367af763a7f156bf08";
+const TIP_WALLET = "0xEc264A2F2e5803b033193ed25A9918B8a6F4C544";
 import { useSounds, unlockOnFirstTap } from "./audio";
 
 const theme = pickTheme();

@@ -12,7 +12,7 @@ Copy `tipjar.ts` + `qrcodegen.ts` into your project:
 import { mountTipJar } from "./tipjar/tipjar";
 mountTipJar(document.getElementById("tips")!, {
   stripeUrl: "https://buy.stripe.com/cNi00labZ2y98uc20v9oc00",
-  wallet: "0x604b2e24df58ef019312b8367af763a7f156bf08",
+  wallet: "0xEc264A2F2e5803b033193ed25A9918B8a6F4C544",
 });
 ```
 In React: call it in a `useEffect` on a ref and return `() => handle.destroy()`.
@@ -25,7 +25,7 @@ Copy `public/tipjar/tipjar.js` (built by `npm run build:tipjar`):
 <script>
   TipJar.mountTipJar(document.getElementById("tips"), {
     stripeUrl: "https://buy.stripe.com/cNi00labZ2y98uc20v9oc00",
-    wallet: "0x604b2e24df58ef019312b8367af763a7f156bf08"
+    wallet: "0xEc264A2F2e5803b033193ed25A9918B8a6F4C544"
   });
 </script>
 ```

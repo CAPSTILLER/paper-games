@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { eip681, qrSvg, BASE_TOKENS } from "../src/tipjar/tipjar";
-const W = "0x604b2e24df58ef019312b8367af763a7f156bf08";
+const W = "0xEc264A2F2e5803b033193ed25A9918B8a6F4C544";
 describe("tipjar", () => {
   it("builds EIP-681 URIs", () => {
     expect(eip681(W, 8453, BASE_TOKENS[0])).toBe(`ethereum:${W}@8453`);
