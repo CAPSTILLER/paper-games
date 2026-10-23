@@ -26,11 +26,12 @@ export function frame(el: HTMLElement, title: string, onExit: (() => void) | und
   el.innerHTML = "";
   const status = h("div", { class: "status" });
   const body = h("div", { class: "body" });
-  const bar = h("div", { class: "bar" },
-    onExit ? h("button", { class: "btn small", onclick: onExit }, "← Menu") : h("span"),
-    h("div", { class: "title" }, title),
-    h("button", { class: "btn small", onclick: onReset }, "↻ New"));
-  const wrap = h("div", { class: "game" }, bar, audioToggles(), status, body);
+  // Header: title left; at right a little "monster" — toggles for eyes-row, Menu as its face, New as its toothy body.
+  const monster = h("div", { class: "monster" }, audioToggles(),
+    onExit ? h("button", { class: "btn mbtn m1", onclick: onExit }, h("i", { class: "eyes" }), "← Menu") : h("span"),
+    h("button", { class: "btn mbtn m2", onclick: onReset }, "↻ New", h("i", { class: "teeth" })));
+  const bar = h("div", { class: "hdr" }, h("h2", { class: "title" }, title), monster);
+  const wrap = h("div", { class: "game" }, bar, status, body);
   el.append(wrap);
   return { status, body, wrap };
 }

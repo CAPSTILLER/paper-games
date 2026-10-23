@@ -15,7 +15,7 @@ export function mount(el: HTMLElement, opts: GameOpts): GameHandle {
   let size = 0, pad = 0, gap = 0;
 
   function layout() {
-    const w = Math.min(F.body.clientWidth || 360, 640);
+    const w = Math.max(160, Math.min(F.body.clientWidth || 360, 640, (F.body.clientHeight || 9999) - score.offsetHeight - 12));
     const dpr = window.devicePixelRatio || 1;
     size = w; pad = w * 0.04; gap = (w - pad * 2) / s.w;
     cv.style.width = cv.style.height = w + "px"; cv.width = cv.height = Math.round(w * dpr);
